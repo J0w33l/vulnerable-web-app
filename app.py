@@ -41,9 +41,9 @@ def home():
     <body class="bg-light">
         <div class="container mt-5">
             <div class="text-center">
-                <h1 class="display-4">Welcome to the Vulnerable Web App</h1>
-                <p class="lead">This app is intentionally vulnerable for training purposes.</p>
-                <a href="/login" class="btn btn-primary btn-lg mt-3">Go to Login Page</a>
+                <h1 class="display-4">Bienvenidos al menu de ejercicios de los talleres del Programa de Entrenamiento en Seguridad con Enfoque DAST</h1>
+                <p class="lead">Estos ejercicios estan creados para probar los conocimientos adquiridos en las sesiones de entrenamiento.</p>
+                <a href="/login" class="btn btn-primary btn-lg mt-3">Ejercicio de SQL Injection</a>
             </div>
         </div>
     </body>
@@ -77,7 +77,7 @@ def login():
             <body class="bg-light">
                 <div class="container mt-5">
                     <div class="alert alert-success text-center">
-                        <h4 class="alert-heading">Login Successful!</h4>
+                        <h4 class="alert-heading">Acceso Permitido!</h4>
                         <p>Welcome, <b>{username}</b>!</p>
                         <a href="/" class="btn btn-primary">Back to Home</a>
                     </div>
@@ -98,8 +98,8 @@ def login():
             <body class="bg-light">
                 <div class="container mt-5">
                     <div class="alert alert-danger text-center">
-                        <h4 class="alert-heading">Login Failed</h4>
-                        <p>Invalid username or password.</p>
+                        <h4 class="alert-heading">Acceso denegado</h4>
+                        <p>Usuario o contraseña Invalida.</p>
                         <a href="/login" class="btn btn-danger">Try Again</a>
                     </div>
                 </div>
