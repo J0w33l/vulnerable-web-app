@@ -1,11 +1,30 @@
 from flask import Flask, request, render_template_string
 import sqlite3
 from setup_db import setup_db  # Ensure this script exists to initialize the database
+import os
 
 app = Flask(__name__)
 
 # Initialize the database
-setup_db()
+def setup_db():
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    # Create users table if it doesn't exist
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY,
+            username TEXT,
+            password TEXT
+        )
+    """)
+    # Insert default user if table is empty
+    cursor.execute("SELECT COUNT(*) FROM users")
+    if cursor.fetchone()[0] == 0:
+        cursor.execute("INSERT INTO users (username, password) VALUES ('admin', 'password123')")
+
+    conn.commit()
+    conn.close()
 
 # Home route
 @app.route("/")
@@ -121,4 +140,5 @@ def login():
     '''
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Default to port 5000 for local testing
+    app.run(host="0.0.0.0", port=port, debug=True)
