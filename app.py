@@ -45,135 +45,187 @@ def setup_db():
 def home():
     return '''
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="es">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <title>Welcome</title>
+        <title>Programa de Entrenamiento en Seguridad</title>
+        <style>
+            .section {
+                margin-bottom: 40px;
+            }
+            .card {
+                transition: transform 0.2s;
+            }
+            .card:hover {
+                transform: scale(1.05);
+            }
+        </style>
     </head>
     <body class="bg-light">
         <div class="container mt-5">
             <div class="text-center">
-                <h1 class="display-4">Programa de Entrenamiento en Seguridad con Enfoque DAST                                                                                                                                                                                                                                                                                 </h1>
-                <p class="lead">Estos ejercicios demuestran vulnerabilidades con fines educativos.</p>
-                <a href="/login" class="btn btn-primary btn-lg mt-3"> Ejercicio de SQL Injection </a>
-                <a href="/exercise-token" class="btn btn-secondary btn-lg mt-3">Ejercicios de exposicion de tokens</a>
+                <h1 class="display-4 text-primary">Programa de Entrenamiento en Seguridad con Enfoque DAST</h1>
+                <p class="lead">Explora diferentes ejercicios para aprender sobre vulnerabilidades comunes y sus mitigaciones.</p>
             </div>
-        </div>
-    </body>
-    </html>
-    '''
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        username = request.form["username"].strip()
-        password = request.form["password"].strip()
-        conn = sqlite3.connect("example.db")
-        cursor = conn.cursor()
-
-        # Authenticate user
-        query = "SELECT * FROM users WHERE username = ? AND password = ?"
-        result = cursor.execute(query, (username, password)).fetchone()
-        conn.close()
-
-        if result:
-            token = str(uuid.uuid4())
-            last_login = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-            # Store token-to-user mapping
-            token_to_user[token] = {"username": username, "last_login": last_login}
-
-            # Set HttpOnly and Secure cookies
-            response = make_response(redirect(url_for("remediated_dashboard")))
-            response.set_cookie("session", token, httponly=True, secure=True, path="/")
-            return response
-        else:
-            return render_template_string('''
-                <h1>Inicio de sesion incorrecto</h1>
-                <p>Usuario o contraseña no valido.</p>
-                <a href="/login">Try Again</a>
-            ''')
-
-    return '''
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <title>Login</title>
-    </head>
-    <body class="bg-light">
-        <div class="container mt-5">
-            <h1 class="text-center">Login</h1>
-            <div class="card mx-auto mt-4" style="max-width: 400px;">
-                <div class="card-body">
-                    <form method="POST">
-                        <div class="mb-3">
-                            <label for="Usuario" class="form-label">Usuario</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
+            <!-- Sección de SQL Injection -->
+            <div class="section">
+                <h2 class="text-center text-danger">Ejercicios de SQL Injection</h2>
+                <div class="row justify-content-center">
+                    <div class="col-md-5">
+                        <div class="card border-danger">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Versión Vulnerable</h5>
+                                <p class="card-text">Explora cómo funciona un ataque de SQL Injection en un entorno inseguro.</p>
+                                <a href="/login-sqli" class="btn btn-danger">Probar SQL Injection</a>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="Contraseña" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card border-success">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Versión Mitigada</h5>
+                                <p class="card-text">Aprende cómo prevenir ataques de SQL Injection mediante consultas parametrizadas.</p>
+                                <a href="/login-mitigated" class="btn btn-success">Probar SQL Injection Mitigado</a>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Login</button>
-                    </form>
+                    </div>
                 </div>
             </div>
+
+            <!-- Sección de Exposición de Tokens -->
+            <div class="section">
+                <h2 class="text-center text-warning">Ejercicios de Exposición de Tokens</h2>
+                <div class="row justify-content-center">
+                    <div class="col-md-5">
+                        <div class="card border-warning">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Versión Vulnerable</h5>
+                                <p class="card-text">Descubre cómo la exposición de tokens en URLs puede comprometer la seguridad.</p>
+                                <a href="/login-expose-dashboard" class="btn btn-warning">Probar Exposición de Tokens</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card border-info">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Versión Mitigada</h5>
+                                <p class="card-text">Aprende a proteger los tokens de sesión usando cookies seguras.</p>
+                                <br>
+                                <a href="/login-secure" class="btn btn-info">Probar Mitigación de Tokens</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de jQuery -->
+            <div class="section">
+                <h2 class="text-center text-primary">Ejercicios de jQuery</h2>
+                <div class="row justify-content-center">
+                    <div class="col-md-5">
+                        <div class="card border-primary">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Versión Vulnerable</h5>
+                                <p class="card-text">Explora cómo una versión desactualizada de jQuery puede generar vulnerabilidades.</p>
+                                <a href="/jquery-vulnerable" class="btn btn-primary">Probar jQuery Vulnerable</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card border-success">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Versión Mitigada</h5>
+                                <p class="card-text">Aprende cómo una versión actualizada de jQuery previene vulnerabilidades conocidas.</p>
+                                <a href="/jquery-secure" class="btn btn-success">Probar jQuery Seguro</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Más ejercicios pueden agregarse aquí -->
+
         </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
     </html>
     '''
 
-@app.route("/login-remediated", methods=["GET", "POST"])
-def login_remediated():
+
+@app.route("/login-sqli", methods=["GET", "POST"])
+def login_sqli():
     if request.method == "POST":
         username = request.form["username"].strip()
         password = request.form["password"].strip()
         conn = sqlite3.connect("example.db")
         cursor = conn.cursor()
 
-        # Authenticate user
-        query = "SELECT * FROM users WHERE username = ? AND password = ?"
-        result = cursor.execute(query, (username, password)).fetchone()
+        # Consulta vulnerable
+        query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
+        print(f"[DEBUG] Consulta ejecutada: {query}")
+        result = cursor.execute(query).fetchone()
         conn.close()
 
         if result:
-            token = str(uuid.uuid4())
-            last_login = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-            # Store token-to-user mapping
-            token_to_user[token] = {"username": username, "last_login": last_login}
-            print(f"[DEBUG] User {username} logged in. Token: {token}")
-
-            # Set HttpOnly and Secure cookies
-            response = make_response(redirect(url_for("remediated_dashboard")))
-            response.set_cookie("session", token, httponly=True, secure=True, path="/")
-            print(f"[DEBUG] Cookie set with token: {token}")
-            return response
+            return f'''
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                <title>Inicio de Sesión Exitoso</title>
+            </head>
+            <body class="bg-light">
+                <div class="container mt-5">
+                    <div class="alert alert-success text-center">
+                        <h4 class="alert-heading">¡Inicio de sesión exitoso!</h4>
+                        <p>Bienvenido, <b>{username}</b>.</p>
+                        <p><strong>Contraseña ingresada:</strong> {password}</p>
+                        <a href="/" class="btn btn-primary">Volver al inicio</a>
+                    </div>
+                </div>
+            </body>
+            </html>
+            '''
         else:
-            print("[DEBUG] Login failed.")
-            return render_template_string('''
-                <h1>Inicio de sesion incorrecto</h1>
-                <p>Invalid username or password.</p>
-                <a href="/login-remediated">Intentelo de nuevo</a>
-            ''')
+            return '''
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                <title>Inicio de Sesión Fallido</title>
+            </head>
+            <body class="bg-light">
+                <div class="container mt-5">
+                    <div class="alert alert-danger text-center">
+                        <h4 class="alert-heading">Inicio de sesión fallido</h4>
+                        <p>Usuario o contraseña incorrectos.</p>
+                        <a href="/login-sqli" class="btn btn-danger">Intentar de nuevo</a>
+                    </div>
+                </div>
+            </body>
+            </html>
+            '''
 
     return '''
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="es">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <title>Login Seguro</title>
+        <title>Inicio de Sesión Vulnerable</title>
     </head>
     <body class="bg-light">
         <div class="container mt-5">
-            <h1 class="text-center">Secure Login</h1>
+            <h1 class="text-center">Inicio de Sesión Vulnerable (SQL Injection)</h1>
             <div class="card mx-auto mt-4" style="max-width: 400px;">
                 <div class="card-body">
                     <form method="POST">
@@ -185,7 +237,123 @@ def login_remediated():
                             <label for="password" class="form-label">Contraseña</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                        <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+                        <button type="button" class="btn btn-secondary w-100 mt-2" data-bs-toggle="modal" data-bs-target="#helpModal">Ayuda</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Ayuda -->
+        <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="helpModalLabel">Ejemplos de Payloads para SQL Injection</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Prueba los siguientes payloads:</p>
+                        <ul>
+                            <li><code>' OR '1'='1</code></li>
+                            <li><code>admin' --</code></li>
+                            <li><code>' UNION SELECT 1, 'hacked', '12345'</code></li>
+                            <li><code>' OR 1=1 --</code></li>
+                        </ul>
+                        <p>Nota: Estos ejemplos son solo para fines educativos.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    '''
+@app.route("/login-mitigated", methods=["GET", "POST"])
+def login_mitigated():
+    if request.method == "POST":
+        username = request.form["username"].strip()
+        password = request.form["password"].strip()
+        conn = sqlite3.connect("example.db")
+        cursor = conn.cursor()
+
+        # Consulta parametrizada
+        query = "SELECT * FROM users WHERE username = ? AND password = ?"
+        print(f"[DEBUG] Consulta parametrizada ejecutada con: {username}, {password}")
+        result = cursor.execute(query, (username, password)).fetchone()
+        conn.close()
+
+        if result:
+            return '''
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                <title>Inicio de Sesión Seguro</title>
+            </head>
+            <body class="bg-light">
+                <div class="container mt-5">
+                    <div class="alert alert-success text-center">
+                        <h4 class="alert-heading">¡Inicio de sesión exitoso!</h4>
+                        <p>Bienvenido, <b>{}</b>.</p>
+                        <a href="/" class="btn btn-primary">Volver al inicio</a>
+                    </div>
+                </div>
+            </body>
+            </html>
+            '''.format(username)
+        else:
+            return '''
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                <title>Inicio de Sesión Fallido</title>
+            </head>
+            <body class="bg-light">
+                <div class="container mt-5">
+                    <div class="alert alert-danger text-center">
+                        <h4 class="alert-heading">Inicio de sesión fallido</h4>
+                        <p>Usuario o contraseña incorrectos.</p>
+                        <a href="/login-mitigated" class="btn btn-danger">Intentar de nuevo</a>
+                    </div>
+                </div>
+            </body>
+            </html>
+            '''
+
+    return '''
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <title>Inicio de Sesión Seguro</title>
+    </head>
+    <body class="bg-light">
+        <div class="container mt-5">
+            <h1 class="text-center">Inicio de Sesión Seguro</h1>
+            <div class="card mx-auto mt-4" style="max-width: 400px;">
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Usuario</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Iniciar Sesión</button>
                     </form>
                 </div>
             </div>
@@ -193,6 +361,8 @@ def login_remediated():
     </body>
     </html>
     '''
+
+
 
 @app.route("/login-expose-dashboard", methods=["GET", "POST"])
 def login_expose_dashboard():
@@ -358,50 +528,6 @@ def remediation_info():
     </html>
     '''
 
-
-@app.route("/remediated-dashboard", methods=["GET"])
-def remediated_dashboard():
-    token = request.cookies.get("session")  # Updated cookie name
-    print(f"[DEBUG] Retrieved token from cookie: {token}")
-    print(f"[DEBUG] token_to_user mapping: {token_to_user}")
-
-    if not token or token not in token_to_user:
-        print("[DEBUG] Session Invalida o expirada.")
-        return "<h1>Error</h1><p>Session Invalida o expirada.</p>", 403
-
-    user_data = token_to_user[token]
-    username = user_data["username"]
-    last_login = user_data["last_login"]
-
-    print(f"[DEBUG] Valid session for user: {username}")
-    return f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <title>Secure Dashboard</title>
-    </head>
-    <body class="bg-light">
-        <div class="container mt-5">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h3 class="text-center">Secure User Dashboard</h3>
-                </div>
-                <div class="card-body">
-                    <p class="lead">Bienvenido, <b>{username}</b>!</p>
-                    <p><strong>Último inicio de sesión:</strong> {last_login}</p>
-                    <p>Tu sesión está protegida con cookies HttpOnly y Secure.</p>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="/" class="btn btn-secondary">Volver al Inicio</a>
-                </div>
-            </div>
-        </div>
-    </body>
-    </html>
-    """
 ##Session Token remediation##
 @app.route("/secure-dashboard", methods=["GET"])
 def secure_dashboard():
@@ -516,6 +642,128 @@ def login_secure():
     </body>
     </html>
     '''
+
+##JQUERY Excercise##
+
+@app.route("/jquery-vulnerable")
+def jquery_vulnerable():
+    return '''
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <title>jQuery Vulnerable</title>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    </head>
+    <body class="bg-light">
+        <div class="container mt-5">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="text-center">Ejercicio: jQuery Vulnerable</h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Explora cómo una versión desactualizada de jQuery puede generar vulnerabilidades de seguridad.</p>
+                    <div class="mb-3">
+                        <label for="userInput" class="form-label">Introduce un valor:</label>
+                        <input type="text" id="userInput" class="form-control" placeholder="Escribe algo aquí">
+                    </div>
+                    <button id="vulnerableButton" class="btn btn-danger">Insertar en la Página</button>
+                    <div id="vulnerableOutput" class="mt-3 p-3 border bg-white"></div>
+                </div>
+                <div class="card-footer text-center">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#helpModal">Ver Ayuda</button>
+                    <a href="/" class="btn btn-secondary">Volver al Inicio</a>
+                </div>
+            </div>
+
+            <!-- Modal de Ayuda -->
+            <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="helpModalLabel">Ayuda: jQuery Vulnerable</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Ejemplos de vulnerabilidades que puedes probar:</p>
+                            <ul>
+                                <li><strong>Payload XSS:</strong> <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code></li>
+                                <li><strong>Manipulación del DOM:</strong> Uso inseguro de <code>html()</code> o <code>append()</code>.</li>
+                            </ul>
+                            <p><strong>Recomendación:</strong> Actualiza a la versión más reciente de jQuery para evitar estos problemas.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function() {
+                $('#vulnerableButton').click(function() {
+                    let userInput = $('#userInput').val();
+                    $('#vulnerableOutput').html(userInput); // Vulnerable to XSS
+                });
+            });
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    '''
+
+@app.route("/jquery-secure")
+def jquery_secure():
+    return '''
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <title>jQuery Seguro</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </head>
+    <body class="bg-light">
+        <div class="container mt-5">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="text-center">Ejercicio: jQuery Seguro</h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Aprende cómo las versiones actualizadas de jQuery pueden prevenir vulnerabilidades comunes.</p>
+                    <div class="mb-3">
+                        <label for="userInputSecure" class="form-label">Introduce un valor:</label>
+                        <input type="text" id="userInputSecure" class="form-control" placeholder="Escribe algo aquí">
+                    </div>
+                    <button id="secureButton" class="btn btn-success">Insertar en la Página</button>
+                    <div id="secureOutput" class="mt-3 p-3 border bg-white"></div>
+                    <p class="mt-3 text-muted">Mitigación: Validación adecuada y uso seguro de funciones para evitar XSS.</p>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="/" class="btn btn-secondary">Volver al Inicio</a>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function() {
+                $('#secureButton').click(function() {
+                    let userInput = $('<div>').text($('#userInputSecure').val()).html(); // Escapando caracteres
+                    $('#secureOutput').html(userInput); // Uso seguro
+                });
+            });
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    '''
+
+
+
 
 if __name__ == "__main__":
     setup_db()  # Ensure the database is properly initialized
