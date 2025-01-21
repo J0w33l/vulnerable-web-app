@@ -1,21 +1,37 @@
 import sqlite3
 
 def setup_db():
-    conn = sqlite3.connect("example.db")
+    db_path = "example.db"
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
     # Create users table if it doesn't exist
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY,
-            username TEXT,
+            username TEXT UNIQUE,
             password TEXT
         )
     """)
-    # Insert default user if table is empty
+
+    # Insert default users
     cursor.execute("SELECT COUNT(*) FROM users")
-    if cursor.fetchone()[0] == 0:
-        cursor.execute("INSERT INTO users (username, password) VALUES ('admin', 'password123')")
+    user_count = cursor.fetchone()[0]
+    print(f"Number of users in the database before insertion: {user_count}")
+
+    if user_count == 0:
+        users = [
+            ('admin', 'password123'),
+            ('joel', 'joel123'),
+            ('alice', 'alice123')
+        ]
+        cursor.executemany("INSERT INTO users (username, password) VALUES (?, ?)", users)
+        print("Default users added to the database.")
+
+    # Debug: Print all users in the database
+    cursor.execute("SELECT * FROM users")
+    all_users = cursor.fetchall()
+    print("Current users in the database:", all_users)
 
     conn.commit()
     conn.close()
