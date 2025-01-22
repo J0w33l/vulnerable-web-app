@@ -50,32 +50,82 @@ def home():
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <title>Programa de Entrenamiento en Seguridad</title>
+        <title>Grupo Babel - Programa de Entrenamiento</title>
         <style>
-            .section {
-                margin-bottom: 40px;
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #ffffff;
+                color: #212529;
+            }
+            .navbar {
+                background-color: #000000;
+                border-bottom: 2px solid #000000;
+            }
+            .navbar-brand {
+                color: #ffffff;
+                font-weight: bold;
+            }
+            .navbar-brand:hover {
+                color: #FF6F00;
+            }
+            .btn-primary {
+                background-color: #FF6F00;
+                border-color: #FF6F00;
+            }
+            .btn-primary:hover {
+                background-color: #FF8C32;
+                border-color: #FF8C32;
+            }
+            .btn-warning {
+                background-color: #FFB000;
+                border-color: #FFB000;
+            }
+            .btn-warning:hover {
+                background-color: #FFC233;
+                border-color: #FFC233;
+            }
+            .footer {
+                background-color: #000000;
+                color: #FF6F00;
+                padding: 10px 0;
+                text-align: center;
+                margin-top: 30px;
             }
             .card {
-                transition: transform 0.2s;
+                border: none;
+                transition: transform 0.3s;
             }
             .card:hover {
                 transform: scale(1.05);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+            .logo {
+                height: 50px;
+                margin-right: 10px;
             }
         </style>
     </head>
-    <body class="bg-light">
+    <body>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <img src="https://babelgroup.com/wp-content/uploads/2024/04/logotipo-babel.svg" alt="Grupo Babel" class="logo">
+                </a>
+            </div>
+        </nav>
+
         <div class="container mt-5">
-            <div class="text-center">
-                <h1 class="display-4 text-primary">Programa de Entrenamiento en Seguridad con Enfoque DAST</h1>
-                <p class="lead">Explora diferentes ejercicios para aprender sobre vulnerabilidades comunes y sus mitigaciones.</p>
+            <div class="text-center mb-4">
+                <h1 class="display-5" style="color: #FF6F00;">Programa de Entrenamiento en Seguridad con Enfoque DAST</h1>
+                <p class="lead">Explora y aprende sobre vulnerabilidades comunes y cómo mitigarlas.</p>
             </div>
 
             <!-- Sección de SQL Injection -->
-            <div class="section">
-                <h2 class="text-center text-danger">Ejercicios de SQL Injection</h2>
+            <div class="section mb-5">
+                <h2 class="text-center" style="color: #FF6F00;">Ejercicios de SQL Injection</h2>
                 <div class="row justify-content-center">
                     <div class="col-md-5">
-                        <div class="card border-danger">
+                        <div class="card bg-light">
                             <div class="card-body text-center">
                                 <h5 class="card-title">Versión Vulnerable</h5>
                                 <p class="card-text">Explora cómo funciona un ataque de SQL Injection en un entorno inseguro.</p>
@@ -84,7 +134,7 @@ def home():
                         </div>
                     </div>
                     <div class="col-md-5">
-                        <div class="card border-success">
+                        <div class="card bg-light">
                             <div class="card-body text-center">
                                 <h5 class="card-title">Versión Mitigada</h5>
                                 <p class="card-text">Aprende cómo prevenir ataques de SQL Injection mediante consultas parametrizadas.</p>
@@ -96,11 +146,11 @@ def home():
             </div>
 
             <!-- Sección de Exposición de Tokens -->
-            <div class="section">
-                <h2 class="text-center text-warning">Ejercicios de Exposición de Tokens</h2>
+            <div class="section mb-5">
+                <h2 class="text-center" style="color: #FFB000;">Ejercicios de Exposición de Tokens</h2>
                 <div class="row justify-content-center">
                     <div class="col-md-5">
-                        <div class="card border-warning">
+                        <div class="card bg-light">
                             <div class="card-body text-center">
                                 <h5 class="card-title">Versión Vulnerable</h5>
                                 <p class="card-text">Descubre cómo la exposición de tokens en URLs puede comprometer la seguridad.</p>
@@ -109,11 +159,10 @@ def home():
                         </div>
                     </div>
                     <div class="col-md-5">
-                        <div class="card border-info">
+                        <div class="card bg-light">
                             <div class="card-body text-center">
                                 <h5 class="card-title">Versión Mitigada</h5>
                                 <p class="card-text">Aprende a proteger los tokens de sesión usando cookies seguras.</p>
-                                <br>
                                 <a href="/login-secure" class="btn btn-info">Probar Mitigación de Tokens</a>
                             </div>
                         </div>
@@ -122,11 +171,11 @@ def home():
             </div>
 
             <!-- Sección de jQuery -->
-            <div class="section">
-                <h2 class="text-center text-primary">Ejercicios de jQuery</h2>
+            <div class="section mb-5">
+                <h2 class="text-center" style="color: #FF6F00;">Ejercicios de jQuery</h2>
                 <div class="row justify-content-center">
                     <div class="col-md-5">
-                        <div class="card border-primary">
+                        <div class="card bg-light">
                             <div class="card-body text-center">
                                 <h5 class="card-title">Versión Vulnerable</h5>
                                 <p class="card-text">Explora cómo una versión desactualizada de jQuery puede generar vulnerabilidades.</p>
@@ -135,7 +184,7 @@ def home():
                         </div>
                     </div>
                     <div class="col-md-5">
-                        <div class="card border-success">
+                        <div class="card bg-light">
                             <div class="card-body text-center">
                                 <h5 class="card-title">Versión Mitigada</h5>
                                 <p class="card-text">Aprende cómo una versión actualizada de jQuery previene vulnerabilidades conocidas.</p>
@@ -145,10 +194,11 @@ def home():
                     </div>
                 </div>
             </div>
-
-            <!-- Más ejercicios pueden agregarse aquí -->
-
         </div>
+
+        <footer class="footer">
+            <p>&copy; 2025 Grupo Babel. Todos los derechos reservados. | Creado por Joel Leiton, Penetration and Vulnerability Tester</p>
+        </footer>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
