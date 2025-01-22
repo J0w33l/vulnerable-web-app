@@ -338,7 +338,8 @@ def login_mitigated():
         conn.close()
 
         if result:
-            return '''
+            # Mostrar página de inicio exitoso con la explicación de mitigación
+            return f'''
             <!DOCTYPE html>
             <html lang="es">
             <head>
@@ -351,14 +352,35 @@ def login_mitigated():
                 <div class="container mt-5">
                     <div class="alert alert-success text-center">
                         <h4 class="alert-heading">¡Inicio de sesión exitoso!</h4>
-                        <p>Bienvenido, <b>{}</b>.</p>
+                        <p>Bienvenido, <b>{username}</b>.</p>
                         <a href="/" class="btn btn-primary">Volver al inicio</a>
                     </div>
+                    <div class="card mt-4">
+                        <div class="card-header bg-success text-white">
+                            <h5>Explicación de la Mitigación</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>En la versión vulnerable, el ataque SQL Injection fue posible porque las consultas SQL se generaron dinámicamente concatenando datos del usuario. Esto permitió a un atacante inyectar comandos maliciosos en la consulta SQL.</p>
+                            <p>En la versión mitigada, se utilizan <strong>consultas parametrizadas</strong>, que separan los datos del usuario del comando SQL, evitando así la ejecución de código malicioso.</p>
+                            <h6>Consulta Vulnerable:</h6>
+                            <pre style="background-color: #f8d7da; padding: 10px; border-radius: 5px;">
+query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
+                            </pre>
+                            <h6>Consulta Segura:</h6>
+                            <pre style="background-color: #d4edda; padding: 10px; border-radius: 5px;">
+query = "SELECT * FROM users WHERE username = ? AND password = ?"
+cursor.execute(query, (username, password))
+                            </pre>
+                            <p>El uso de consultas parametrizadas garantiza que los datos proporcionados por el usuario se traten como valores literales, no como comandos SQL.</p>
+                        </div>
+                    </div>
                 </div>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
             </body>
             </html>
-            '''.format(username)
+            '''
         else:
+            # Mostrar mensaje de error
             return '''
             <!DOCTYPE html>
             <html lang="es">
@@ -376,10 +398,12 @@ def login_mitigated():
                         <a href="/login-mitigated" class="btn btn-danger">Intentar de nuevo</a>
                     </div>
                 </div>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
             </body>
             </html>
             '''
 
+    # Formulario de inicio de sesión
     return '''
     <!DOCTYPE html>
     <html lang="es">
@@ -408,9 +432,12 @@ def login_mitigated():
                 </div>
             </div>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
     </html>
     '''
+
+
 
 
 
