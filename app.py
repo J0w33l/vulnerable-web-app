@@ -194,6 +194,56 @@ def home():
                     </div>
                 </div>
             </div>
+
+            <!-- Sección de Content-Security-Policy (CSP) -->
+            <div class="section mb-5">
+                <h2 class="text-center" style="color: #FF6F00;">Ejercicios de Content-Security-Policy (CSP)</h2>
+                <div class="row justify-content-center">
+                    <div class="col-md-5">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Versión Vulnerable</h5>
+                                <p class="card-text">Explora cómo la falta de CSP puede llevar a ataques XSS.</p>
+                                <a href="/csp-vulnerable" class="btn btn-danger">Probar CSP Vulnerable</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Versión Mitigada</h5>
+                                <p class="card-text">Aprende a configurar una política de CSP para evitar ataques XSS.</p>
+                                <a href="/csp-secure" class="btn btn-success">Probar CSP Seguro</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Manejo de Cookies -->
+            <div class="section mb-5">
+                <h2 class="text-center" style="color: #FF6F00;">Ejercicios de Manejo de Cookies</h2>
+                <div class="row justify-content-center">
+                    <div class="col-md-5">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Versión Vulnerable</h5>
+                                <p class="card-text">Descubre cómo el mal manejo de cookies puede ser inseguro.</p>
+                                <a href="/cookies-vulnerable" class="btn btn-danger">Probar Cookies Vulnerables</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Versión Segura</h5>
+                                <p class="card-text">Aprende a configurar cookies seguras con flags esenciales.</p>
+                                <a href="/cookies-secure" class="btn btn-success">Probar Cookies Seguras</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <footer class="footer">
@@ -204,6 +254,7 @@ def home():
     </body>
     </html>
     '''
+
 
 
 @app.route("/login-sqli", methods=["GET", "POST"])
@@ -839,8 +890,288 @@ def jquery_secure():
     </html>
     '''
 
+@app.route("/csp-vulnerable")
+def csp_vulnerable():
+    # Sin configuraciones de CSP
+    return '''
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <title>Ejercicio CSP Vulnerable</title>
+    </head>
+    <body class="bg-light">
+        <div class="container mt-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white text-center">
+                    <h3>Ejemplo Vulnerable: Falta de CSP</h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Este sitio no tiene una política de CSP definida, lo que permite la ejecución de scripts maliciosos.</p>
+                    <div class="alert alert-danger">Ejemplo de XSS: <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code></div>
+                    <button id="runScriptButton" class="btn btn-danger">Ejecutar Script</button>
+                    <a href="/csp-secure" class="btn btn-success">Ver versión segura</a>
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#explanationModal">¿Por qué es vulnerable?</button>
+                </div>
+                                <div class="card-footer text-center">
+                    <a href="/" class="btn btn-secondary">Volver al Inicio</a>
+                </div>
+            </div>
+        </div>
 
+        <!-- Modal de explicación -->
+        <div class="modal fade" id="explanationModal" tabindex="-1" aria-labelledby="explanationModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="explanationModalLabel">Explicación: Falta de CSP</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>La falta de una política CSP permite que cualquier script, incluso malicioso, se ejecute en el navegador del usuario.</p>
+                        <p><strong>Herramientas de Validación:</strong></p>
+                        <ul>
+                            <li>Utiliza DevTools del navegador para verificar los encabezados HTTP y simular ataques.</li>
+                            <li>Inspecciona el código fuente para identificar scripts no confiables.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <script>
+            document.getElementById('runScriptButton').addEventListener('click', function() {
+                const script = "alert('Este es un script malicioso ejecutado sin restricciones.');";
+                eval(script);
+            });
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    '''
+
+@app.route("/csp-secure")
+def csp_secure():
+    # Aplicando configuraciones seguras de CSP
+    response = make_response('''
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <title>Ejercicio CSP Seguro</title>
+    </head>
+    <body class="bg-light">
+        <div class="container mt-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white text-center">
+                    <h3>Ejemplo Seguro: Configuración de CSP</h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Este sitio tiene una política CSP que permite la carga de scripts confiables como Bootstrap, previniendo ataques XSS.</p>
+                    <div class="alert alert-success">
+                        <strong>Ejemplo de CSP aplicado:</strong>
+                        <div style="background-color: #d4edda; padding: 10px; border-radius: 5px; font-weight: bold;">default-src 'self' https://cdn.jsdelivr.net;</div>
+                    </div>
+                    <p>Con esta configuración, solo se permite la ejecución de scripts desde el dominio propio y recursos confiables como CDNs.</p>
+                    <div class="text-center">
+                        <a href="/csp-vulnerable" class="btn btn-danger me-2">Ver versión vulnerable</a>
+                        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#explanationModal">¿Cómo se mitigó?</button>
+                    </div>
+                </div>
+                                <div class="card-footer text-center">
+                    <a href="/" class="btn btn-secondary">Volver al Inicio</a>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de explicación -->
+        <div class="modal fade" id="explanationModal" tabindex="-1" aria-labelledby="explanationModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="explanationModalLabel">Explicación: Configuración de CSP</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>La vulnerabilidad se mitigó implementando un encabezado Content-Security-Policy (CSP), que restringe las fuentes desde las cuales el navegador puede cargar recursos.</p>
+                        <p><strong>Mitigación aplicada:</strong></p>
+                        <ul>
+                            <li>Se definió una política CSP con <code>default-src 'self' https://cdn.jsdelivr.net;</code>, permitiendo solo recursos confiables.</li>
+                            <li>Esto previene la ejecución de scripts inyectados o maliciosos desde fuentes externas no confiables.</li>
+                        </ul>
+                        <p><strong>Beneficios:</strong></p>
+                        <ul>
+                            <li>Evita que scripts maliciosos cargados desde dominios externos no confiables se ejecuten.</li>
+                            <li>Permite el uso de recursos externos confiables, como CDNs, para librerías comunes.</li>
+                        </ul>
+                        <p><strong>Herramientas de Validación:</strong></p>
+                        <ul>
+                            <li>Verifica la política CSP con DevTools en el navegador (Pestaña "Network" → Encabezados).</li>
+                            <li>Usa herramientas de seguridad específicas para comprobar encabezados HTTP.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    ''')
+    response.headers["Content-Security-Policy"] = "default-src 'self' https://cdn.jsdelivr.net;"
+    return response
+
+# Ejercicio 2: Manejo seguro de cookies
+@app.route("/cookies-vulnerable")
+def cookies_vulnerable():
+    response = make_response('''
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <title>Cookies Vulnerables</title>
+    </head>
+    <body class="bg-light">
+        <div class="container mt-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white text-center">
+                    <h3>Ejemplo de Cookies Vulnerables</h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Esta cookie no está configurada con Secure ni HttpOnly, lo que la hace susceptible a ataques.</p>
+                    <div class="alert alert-danger">Cookie creada: <code>vulnerable_cookie=valor_inseguro</code></div>
+                    <div class="text-center">
+                        <button class="btn btn-warning" id="attackButton">Simular Ataque</button>
+                        <a href="/cookies-secure" class="btn btn-success">Ver versión segura</a>
+                        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#explanationModal">¿Por qué es vulnerable?</button>
+                    </div>
+                                                    <div class="card-footer text-center">
+                    <a href="/" class="btn btn-secondary">Volver al Inicio</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de explicación -->
+        <div class="modal fade" id="explanationModal" tabindex="-1" aria-labelledby="explanationModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="explanationModalLabel">Explicación: Cookies Vulnerables</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Las cookies sin los flags <code>Secure</code> y <code>HttpOnly</code> pueden ser interceptadas o manipuladas, comprometiendo la seguridad.</p>
+                        <p><strong>Ejemplo de ataque:</strong> Un atacante podría ejecutar un script malicioso para leer las cookies en el navegador del usuario, como este:</p>
+                        <div class="alert alert-danger">
+                            <code>&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code>
+                        </div>
+                        <p>Presiona el botón "Simular Ataque" para ver cómo un script puede acceder a las cookies.</p>
+                        <p><strong>Herramientas de Validación:</strong></p>
+                        <ul>
+                            <li>Utiliza DevTools para inspeccionar las cookies.</li>
+                            <li>Prueba con herramientas de análisis de seguridad para verificar la configuración insegura.</li>
+                        </ul>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('attackButton').addEventListener('click', function() {
+                alert('Simulación de ataque: Las cookies accesibles son: ' + document.cookie);
+            });
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    ''')
+    response.set_cookie("vulnerable_cookie", "valor_inseguro")
+    return response
+
+@app.route("/cookies-secure")
+def cookies_secure():
+    response = make_response('''
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <title>Cookies Seguras</title>
+    </head>
+    <body class="bg-light">
+        <div class="container mt-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white text-center">
+                    <h3>Ejemplo de Cookies Seguras</h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Esta cookie está configurada con Secure y HttpOnly, lo que mejora significativamente la seguridad.</p>
+                    <div class="alert alert-success">Cookie creada: <code>secure_cookie=valor_seguro</code></div>
+                    <div class="text-center">
+                        <button class="btn btn-warning" id="attackButton">Simular Ataque</button>
+                        <a href="/cookies-vulnerable" class="btn btn-danger">Ver versión vulnerable</a>
+                        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#explanationModal">¿Por qué es seguro?</button>
+                    </div>
+                                                    <div class="card-footer text-center">
+                    <a href="/" class="btn btn-secondary">Volver al Inicio</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de explicación -->
+        <div class="modal fade" id="explanationModal" tabindex="-1" aria-labelledby="explanationModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="explanationModalLabel">Explicación: Cookies Seguras</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>La configuración segura de cookies utiliza los flags <code>Secure</code> y <code>HttpOnly</code>, evitando accesos no autorizados.</p>
+                        <p><strong>Mitigación aplicada:</strong></p>
+                        <ul>
+                            <li>El flag <code>HttpOnly</code> asegura que las cookies no sean accesibles mediante JavaScript.</li>
+                            <li>El flag <code>Secure</code> garantiza que las cookies solo se transmitan a través de conexiones HTTPS.</li>
+                        </ul>
+                        <p><strong>Simulación de ataque:</strong> Al presionar el botón "Simular Ataque", se intenta acceder a las cookies mediante JavaScript. En este caso, no será posible debido a la configuración segura.</p>
+                        <p><strong>Herramientas de Validación:</strong></p>
+                        <ul>
+                            <li>Verifica los atributos de las cookies con DevTools.</li>
+                            <li>Utiliza herramientas de análisis de seguridad para confirmar las configuraciones seguras.</li>
+                        </ul>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('attackButton').addEventListener('click', function() {
+                try {
+                    alert('Simulación de ataque: Las cookies accesibles son: ' + document.cookie);
+                } catch (e) {
+                    alert('No se pueden acceder a las cookies debido a la configuración segura.');
+                }
+            });
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    ''')
+    response.set_cookie("secure_cookie", "valor_seguro", httponly=True, secure=True)
+    return response
 
 if __name__ == "__main__":
     setup_db()  # Ensure the database is properly initialized
