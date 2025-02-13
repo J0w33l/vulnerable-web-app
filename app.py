@@ -1326,7 +1326,7 @@ def exercise_api_secure():
 
                     <h5 class="text-success">Cómo Probar la Versión Segura</h5>
                     <p>Ejecuta el siguiente comando para acceder a la API con autenticación:</p>
-                    <code>curl -X GET http://localhost:5000/api-secure -H "Authorization: xyz789"</code>
+                    <code>curl -X GET https://bncr-entrenamiento-9c003bd7c275.herokuapp.com/api-secure -H "Authorization: xyz789"</code>
                     <p>Solo se devolverán los datos del usuario autenticado.</p>
 
                     <div class="alert alert-info">
