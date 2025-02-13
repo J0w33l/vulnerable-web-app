@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template_string, redirect, url_for, make_response
+from flask import Flask, jsonify, request, render_template_string, redirect, url_for, make_response
 import sqlite3
 import os
 import uuid
@@ -9,6 +9,7 @@ app.secret_key = "supersecretkey"  # Required for session handling
 
 # Simulated token-to-user mapping (in-memory storage)
 token_to_user = {}
+
 
 # Initialize the database
 def setup_db():
@@ -244,7 +245,32 @@ def home():
                     </div>
                 </div>
             </div>
-        </div>
+        
+
+        <!-- Seccion API -->
+            <div class="section mb-5">
+            <h2 class="text-center" style="color: #FF6F00;">Ejercicios de Gestion de APIs</h2>
+                <div class="row justify-content-center">
+                <div class="col-md-5">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h5 class="card-title text-danger">Versión Vulnerable</h5>
+                            <p class="card-text">Explora cómo una API mal configurada puede exponer datos sensibles.</p>
+                            <a href="/exercise-api-vulnerable" class="btn btn-danger">Probar API Vulnerable</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h5 class="card-title text-success">Versión Segura</h5>
+                            <p class="card-text">Aprende cómo mitigar la exposición de datos y mejorar la seguridad.</p>
+                            <a href="/exercise-api-secure" class="btn btn-success">Probar API Segura</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
 
         <footer class="footer">
             <p>&copy; 2025 Grupo Babel. Todos los derechos reservados. | Creado por Joel Leiton, Penetration and Vulnerability Tester</p>
@@ -1172,6 +1198,134 @@ def cookies_secure():
     ''')
     response.set_cookie("secure_cookie", "valor_seguro", httponly=True, secure=True)
     return response
+
+#API testing----------------------------------------------------|
+# Simulación de base de datos con datos sensibles
+users = [
+    {"id": 1, "username": "admin", "password": "admin123", "email": "admin@example.com", "token": "abc123"},
+    {"id": 2, "username": "joel", "password": "joel123", "email": "joel@example.com", "token": "xyz789"},
+    {"id": 3, "username": "alice", "password": "alice123", "email": "alice@example.com", "token": "def456"}
+]
+
+@app.route('/api-vulnerable', methods=['GET'])
+def api_vulnerable():
+    return jsonify(users)  # Devuelve datos sensibles sin autorización
+
+@app.route("/exercise-api-vulnerable")
+def exercise_api_vulnerable():
+    return render_template_string('''
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <title>API Vulnerable - Exposición de Datos</title>
+    </head>
+    <body class="bg-light">
+        <div class="container mt-5">
+            <div class="card">
+                <div class="card-header bg-danger text-white text-center">
+                    <h3>Ejercicio: API Vulnerable</h3>
+                </div>
+                <div class="card-body">
+                    <h5 class="text-danger">Descripción del Problema</h5>
+                    <p>Esta API presenta una vulnerabilidad grave debido a la **exposición de datos sensibles** y **falta de control de acceso**. 
+                    Actualmente, cualquier usuario puede acceder a la lista completa de usuarios junto con información confidencial, como contraseñas y tokens de autenticación.</p>
+                    
+                    <h5 class="text-danger">Causas de la Vulnerabilidad</h5>
+                    <ul>
+                        <li><strong>Ausencia de Autenticación y Autorización:</strong> No hay ninguna validación que restrinja el acceso a los datos.</li>
+                        <li><strong>Exposición de Datos Sensibles:</strong> La API devuelve información como contraseñas y tokens en texto plano.</li>
+                        <li><strong>Enumeración de Usuarios:</strong> Un atacante puede extraer datos de todos los usuarios sin restricciones.</li>
+                    </ul>
+
+                    <h5 class="text-danger">Exploit: Cómo probar la falla</h5>
+                    <p>Ejecuta el siguiente comando en tu terminal para acceder a los datos sensibles:</p>
+                    <code>curl -X GET https://bncr-entrenamiento-9c003bd7c275.herokuapp.com/api-vulnerable</code>
+                    <p>Esto devolverá la lista completa de usuarios, incluyendo contraseñas y tokens.</p>
+
+                    <div class="alert alert-warning">
+                        <strong>Impacto:</strong> Un atacante podría robar credenciales, realizar secuestro de sesiones y comprometer la seguridad del sistema.
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a href="/" class="btn btn-secondary">Volver al Inicio</a>
+                        <a href="/exercise-api-secure" class="btn btn-success">Ver Versión Segura</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    ''')
+
+
+# Simulación de base de datos segura
+users_secure = {
+    "abc123": {"id": 1, "username": "admin", "email": "admin@example.com"},
+    "xyz789": {"id": 2, "username": "joel", "email": "joel@example.com"},
+    "def456": {"id": 3, "username": "alice", "email": "alice@example.com"}
+}
+
+@app.route('/api-secure', methods=['GET'])
+def api_secure():
+    token = request.headers.get('Authorization')
+
+    if not token or token not in users_secure:
+        return jsonify({"error": "Acceso no autorizado"}), 403
+
+    return jsonify(users_secure[token])  # Retorna solo la información del usuario autenticado
+
+@app.route("/exercise-api-secure")
+def exercise_api_secure():
+    return render_template_string('''
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <title>API Segura - Protección de Datos</title>
+    </head>
+    <body class="bg-light">
+        <div class="container mt-5">
+            <div class="card">
+                <div class="card-header bg-success text-white text-center">
+                    <h3>Ejercicio: API Segura</h3>
+                </div>
+                <div class="card-body">
+                    <h5 class="text-success">Solución y Mitigación</h5>
+                    <p>Se han implementado mejoras de seguridad para mitigar las vulnerabilidades presentes en la versión anterior.</p>
+                    
+                    <h5 class="text-success">Mejoras Implementadas</h5>
+                    <ul>
+                        <li><strong>Autenticación Requerida:</strong> Se requiere un token válido para acceder a los datos.</li>
+                        <li><strong>Restricción de Acceso:</strong> Cada usuario solo puede acceder a su propia información.</li>
+                        <li><strong>Protección de Datos Sensibles:</strong> No se devuelven contraseñas ni tokens en la respuesta.</li>
+                    </ul>
+
+                    <h5 class="text-success">Cómo Probar la Versión Segura</h5>
+                    <p>Ejecuta el siguiente comando para acceder a la API con autenticación:</p>
+                    <code>curl -X GET http://localhost:5000/api-secure -H "Authorization: xyz789"</code>
+                    <p>Solo se devolverán los datos del usuario autenticado.</p>
+
+                    <div class="alert alert-info">
+                        <strong>Beneficio:</strong> Ahora la API protege la información del usuario y evita fugas de datos confidenciales.
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a href="/" class="btn btn-secondary">Volver al Inicio</a>
+                        <a href="/exercise-api-vulnerable" class="btn btn-danger">Ver Versión Vulnerable</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    ''')
+
+
 
 if __name__ == "__main__":
     setup_db()  # Ensure the database is properly initialized
