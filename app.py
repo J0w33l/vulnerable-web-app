@@ -12,8 +12,7 @@ app.secret_key = "supersecretkey"  # Required for session handling
 # Simulated token-to-user mapping (in-memory storage)
 token_to_user = {}
 
-# Initialize Flask-RESTful API ✅ Fix here
-api = Api(app)  # ✅ This must be defined before api.add_resource()
+
 
 # Initialize the database
 def setup_db():
@@ -275,21 +274,6 @@ def home():
                 </div>
             </div>
         </div>  
-
-        <div class="section mb-5">
-    <h2 class="text-center" style="color: #FF6F00;">Ejercicio de Uso de Swagger</h2>
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card bg-light">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-primary">Explora el Uso de Swagger</h5>
-                    <p class="card-text">Aprende cómo utilizar Swagger UI para probar APIs de manera interactiva.</p>
-                    <a href="/exercise-swagger-explanation" class="btn btn-primary">Ir al Ejercicio de Swagger</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
         <footer class="footer">
             <p>&copy; 2025 Grupo Babel. Todos los derechos reservados. | Creado por Joel Leiton, Penetration and Vulnerability Tester</p>
@@ -1445,103 +1429,6 @@ def swagger_json():
             }
         }
     })
-
-@app.route("/exercise-swagger-explanation")
-def swagger_explanation():
-    return '''
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <title>Ejercicio - Uso de Swagger</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #ffffff;
-                color: #212529;
-            }
-            .container {
-                max-width: 800px;
-            }
-            .btn-primary {
-                background-color: #FF6F00;
-                border-color: #FF6F00;
-            }
-            .btn-primary:hover {
-                background-color: #FF8C32;
-                border-color: #FF8C32;
-            }
-            .btn-warning {
-                background-color: #FFB000;
-                border-color: #FFB000;
-            }
-            .btn-warning:hover {
-                background-color: #FFC233;
-                border-color: #FFC233;
-            }
-            .card {
-                border: none;
-                transition: transform 0.3s;
-            }
-            .card:hover {
-                transform: scale(1.05);
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container mt-5">
-            <h1 class="text-center text-primary">Ejercicio - Uso de Swagger</h1>
-            <p class="lead text-center">Aprende cómo interactuar con las APIs usando Swagger UI y la definición JSON.</p>
-
-            <div class="card mt-4">
-                <div class="card-body">
-                    <h4 class="text-warning">1️⃣ ¿Qué es Swagger?</h4>
-                    <p>Swagger es una herramienta que permite documentar, visualizar e interactuar con APIs en un entorno fácil de usar.</p>
-                </div>
-            </div>
-
-            <div class="card mt-4">
-                <div class="card-body">
-                    <h4 class="text-success">2️⃣ Accediendo a Swagger UI</h4>
-                    <p>Swagger UI proporciona una interfaz gráfica donde puedes probar los endpoints de la API.</p>
-                    <a href="/api/docs" class="btn btn-primary" target="_blank">Abrir Swagger UI</a>
-                </div>
-            </div>
-
-            <div class="card mt-4">
-                <div class="card-body">
-                    <h4 class="text-danger">3️⃣ Viendo la Definición Swagger JSON</h4>
-                    <p>Si prefieres ver la definición en formato JSON, accede al siguiente enlace:</p>
-                    <a href="/swagger.json" class="btn btn-warning" target="_blank">Ver Swagger JSON</a>
-                </div>
-            </div>
-
-            <div class="card mt-4">
-                <div class="card-body">
-                    <h4 class="text-info">4️⃣ Cómo probar un endpoint en Swagger UI</h4>
-                    <p>Para probar una API en Swagger UI:</p>
-                    <ul>
-                        <li>📌 Accede a <a href="/api/docs" target="_blank">Swagger UI</a>.</li>
-                        <li>📌 Encuentra el endpoint que deseas probar.</li>
-                        <li>📌 Haz clic en el botón "Try it out" (Probar).</li>
-                        <li>📌 Ingresa los parámetros requeridos.</li>
-                        <li>📌 Presiona "Execute" para ver la respuesta de la API.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="text-center mt-4">
-                <a href="/" class="btn btn-secondary">Volver al Inicio</a>
-            </div>
-        </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
-    </html>
-    '''
 
 
 
