@@ -3,6 +3,8 @@ import sqlite3
 import os
 import uuid
 from datetime import datetime
+from flask_restful import Api, Resource  
+from flask_swagger_ui import get_swaggerui_blueprint
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"  # Required for session handling
@@ -10,6 +12,8 @@ app.secret_key = "supersecretkey"  # Required for session handling
 # Simulated token-to-user mapping (in-memory storage)
 token_to_user = {}
 
+# Initialize Flask-RESTful API ✅ Fix here
+api = Api(app)  # ✅ This must be defined before api.add_resource()
 
 # Initialize the database
 def setup_db():
@@ -1324,6 +1328,108 @@ def exercise_api_secure():
     </body>
     </html>
     ''')
+# Swagger UI setup
+SWAGGER_URL = "/api/docs"  # URL for accessing Swagger UI
+API_URL = "/swagger.json"   # URL for OpenAPI JSON file
+
+swagger_ui_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL)
+app.register_blueprint(swagger_ui_blueprint, url_prefix=SWAGGER_URL)
+
+class SecureAPI(Resource):
+    def get(self):
+        """
+        API Secure Endpoint
+        ---
+        tags:
+          - Secure API
+        summary: Get user details with authentication
+        parameters:
+          - in: header
+            name: Authorization
+            schema:
+              type: string
+            required: true
+            description: Bearer Token for authentication
+        responses:
+          200:
+            description: User information
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 2
+                    username:
+                      type: string
+                      example: "joel"
+                    email:
+                      type: string
+                      example: "joel@example.com"
+          403:
+            description: Unauthorized access
+        """
+        token = request.headers.get("Authorization")
+
+        if not token or token not in users_secure:
+            return jsonify({"error": "Acceso no autorizado"}), 403
+
+        return jsonify(users_secure[token])
+
+# Register the API route
+api.add_resource(SecureAPI, "/api-secure")
+
+@app.route("/swagger.json")
+def swagger_json():
+    """
+    OpenAPI JSON file for Swagger UI
+    """
+    return jsonify({
+        "openapi": "3.0.0",
+        "info": {
+            "title": "Secure API",
+            "version": "1.0",
+            "description": "API with authentication and security best practices"
+        },
+        "paths": {
+            "/api-secure": {
+                "get": {
+                    "tags": ["Secure API"],
+                    "summary": "Get user details with authentication",
+                    "parameters": [
+                        {
+                            "in": "header",
+                            "name": "Authorization",
+                            "schema": {"type": "string"},
+                            "required": True,
+                            "description": "Bearer Token for authentication"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "User information",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {"type": "integer", "example": 2},
+                                            "username": {"type": "string", "example": "joel"},
+                                            "email": {"type": "string", "example": "joel@example.com"}
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "403": {
+                            "description": "Unauthorized access"
+                        }
+                    }
+                }
+            }
+        }
+    })
 
 
 
